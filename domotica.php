@@ -7,7 +7,6 @@ $agi->answer();
 $arduino_ip = "192.168.0.19";
 $arduino_port = 5000;
 ///////////////////////////////constantes///////////////////////////////////////
-
 $saludo="Bienvenido";
 $despedida="Gracias por utilizar el sitema de audiorespuesta, hasta pronto";
 $error_prompt = "error en la conexion";
@@ -31,11 +30,23 @@ function sendGet(){
     '192.168.0.27/pin=13'
   );
   $content = curl_exec($ch);
-  echo $content;
-	}
+
+  for($i=0;$i<strlen($content);$i++){
+    if($content[$i]=='~'){
+      $response="";
+      $i++;
+      while($content[$i]!='~'){
+          $response=$response.$content[$i];
+          $i++;
+      }
+    }
+  }
+  return $response;
+}
 //////////////////////////////programa//////////////////////////////////////////
 speak($saludo);
-sendGet();
+$response=sendGet();
+echo "response: ".$response."\n";
 /*
 $fp = fsockopen($arduino_ip, $arduino_port, $errno, $errstr);
 
@@ -67,3 +78,4 @@ speak($despedida);
 fclose($fp);
 $agi->hangup();
 ?>
+

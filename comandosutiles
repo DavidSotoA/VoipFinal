@@ -1,0 +1,7 @@
+sudo nmap -sP 192.168.0.1-254 //buscar ips en la red detro del rango especificado
+
+sudo chmod 666 /dev/ttyACM0 // esta cosa para que funcione el ide de arduino
+
+curl -i -X GET http://192.168.0.27:80/pin=13 //realizar peticion GET
+
+
