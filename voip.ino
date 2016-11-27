@@ -90,15 +90,17 @@
        case 3:
          humedadRequest(strid);
        break;
+       case 4:
+         getStateLed(strid);
+       break;
        default:
        break;
      }
      WIFI1.println("AT+CIPCLOSE="+strid);
   }
 
-  void ledRequest(String strid){
-    digitalWrite(13, !digitalRead(13));
-     if(digitalRead(13)==HIGH){
+  void getStateLed(String strid){
+    if(digitalRead(13)==HIGH){
        Serial.println("1");
        http("~1~",strid);
      }
@@ -106,6 +108,11 @@
        Serial.println("0");
        http("~0~",strid);
      }
+  }
+
+  void ledRequest(String strid){
+    digitalWrite(13, !digitalRead(13));
+    getStateLed(strid);
   }
 
   void temperaturaRequest(String strid){
