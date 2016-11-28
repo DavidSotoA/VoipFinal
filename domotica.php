@@ -5,6 +5,7 @@ $agi = new AGI();
 $agi->answer();
 
 ///////////////////////////////constantes///////////////////////////////////////
+$usuarios = array("1234","2345","3456");
 $saludo = "Bienvenido";
 $despedida = "Gracias por utilizar el sitema de audiorespuesta, hasta pronto";
 $error_prompt = "error en la conexion";
@@ -14,6 +15,10 @@ $resp_luz_1 = "Luces encendidas";
 $resp_temp = "La temperatura de la casa es ";
 $resp_hum = "La humedad de la casa es ";
 $opc_incorrecta = "Opcion incorrecta, intente nuevamente";
+$autencicacion = "Por favor ingrese su clave de acceso";
+$ladron= "alerta de intruso, adios";
+$clave_correcta="clave correcta";
+$clave_incorrecta="clave incorrecta";
 $num_opc = 3;
 $intentos_menu=5;
 $error = "ERROR:";
@@ -57,8 +62,8 @@ class utilities {
             $i++;
         }
       }
-  }
-  return $response;
+    }
+    return $response;
   }
 
   public function menu1($num_opc,$count){
@@ -96,13 +101,43 @@ class utilities {
       break;
     }
   }
+
+  public function autenticar(){
+    global $agi,$autencicacion,$usuarios;
+    $this->speak($autencicacion);
+    $_result = $agi->get_data('beep', 5000, 4);
+    $opc = $_result['result'];
+    foreach ($usuarios as &$usuario) {
+      if($opc===$usuario){
+        $this->speak("clave correcta");
+        return true;
+      }
+    }
+    $this->speak("clave incorrecta");
+    return false;
+  }
 }
 
 //////////////////////////////programa//////////////////////////////////////////
 $testObject = new utilities();
+$testObject->speak($saludo);
+
+//Autenticar al usuario
+$intentos=3;
+$existUser=false;
+do{
+  $intentos=$intentos-1;
+  $existUser=$testObject->autenticar();
+}while(!$existUser && $intentos>0);
+
+if($intentos==0 && !$existUser){
+  $testObject->speak($ladron);
+  $agi->hangup();
+}
+//Obtener estado inicial del led
 $stateLed=$testObject->sendGet(4);
 
-$testObject->speak($saludo);
+//funcionalidad
 do{
   $opc=$testObject->menu1(4,0);
   $response=$testObject->sendGet($opc);
@@ -110,6 +145,7 @@ do{
   sleep(1);
 }while(intval($opc)!=4);
 
+//pico y chao
 $testObject->speak($despedida);
 $agi->hangup();
 ?>
