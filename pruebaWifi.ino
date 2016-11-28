@@ -1,9 +1,9 @@
 #include <SoftwareSerial.h>
-SoftwareSerial BT1(3, 2); // RX | TX
+SoftwareSerial BT1(4, 3); // RX | TX
 
 void setup()
-  {  Serial.begin(115200);
-     BT1.begin(115200);
+  {  Serial.begin(9600);
+     BT1.begin(9600);
   }
 
 void loop()
